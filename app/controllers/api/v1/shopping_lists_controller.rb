@@ -2,7 +2,7 @@ module Api
   module V1
     class ShoppingListsController < ApplicationController
       before_action :authorize_user
-      before_action :set_shopping_list, only: [:show, :update, :destroy]
+  before_action :set_shopping_list, only: [ :show, :update, :destroy ]
 
       # GET /api/v1/shopping_lists
       def index
@@ -45,7 +45,7 @@ module Api
 
       def set_shopping_list
         @shopping_list = current_user.shopping_lists.find_by(id: params[:id])
-        return render json: { error: 'Not Found' }, status: :not_found unless @shopping_list
+  render json: { error: "Not Found" }, status: :not_found unless @shopping_list
       end
 
       def shopping_list_params

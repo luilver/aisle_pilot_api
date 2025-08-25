@@ -16,6 +16,16 @@ class Api::V1::ProductsController < ApplicationController
     end
   end
 
+  # GET /api/v1/products/:id
+  def show
+    product = Product.find_by(id: params[:id])
+    if product
+      render json: product_response(product), status: :ok
+    else
+      render json: { error: "Product not found" }, status: :not_found
+    end
+  end
+
   private
 
   def product_response(product)

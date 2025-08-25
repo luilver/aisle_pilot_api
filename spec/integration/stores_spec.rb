@@ -11,7 +11,8 @@ RSpec.describe 'Stores', type: :request do
       response '200', 'stores listed' do
         let(:user) { User.create!(name: "Test User", email: "test@example.com", password: "password") }
         let(:Authorization) do
-          token = JWT.encode({ user_id: user.id }, Rails.application.credentials.jwt_secret)
+          secret = Rails.application.credentials.jwt_secret.presence || ENV['JWT_SECRET']
+          token = JWT.encode({ user_id: user.id }, secret, 'HS256')
           "Bearer #{token}"
         end
 
