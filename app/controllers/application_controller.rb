@@ -20,8 +20,13 @@ class ApplicationController < ActionController::API
     end
   end
 
+  # Centralized JWT secret with fallback for test/dev via ENV
+  def jwt_secret
+    Rails.application.credentials.jwt_secret.presence || ENV["JWT_SECRET"]
+  end
+
   def encode_token(payload)
-    JWT.encode(payload, Rails.application.credentials.jwt_secret)
+    JWT.encode(payload, jwt_secret, "HS256")
   end
 
   # header: { 'Authorization': 'Bearer <token>' }
@@ -29,7 +34,7 @@ class ApplicationController < ActionController::API
     if auth_header
       token = auth_header.split(" ")[1]
       begin
-        JWT.decode(token, Rails.application.credentials.jwt_secret, true, algorithm: "HS256")
+        JWT.decode(token, jwt_secret, true, algorithm: "HS256")
       rescue JWT::DecodeError
         nil
       end

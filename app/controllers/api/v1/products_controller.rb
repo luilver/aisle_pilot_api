@@ -4,8 +4,8 @@ class Api::V1::ProductsController < ApplicationController
   # GET /api/v1/products
   # Optionally filtered by ?store_id=1
   def index
-    if params[:store_id]
-      store = Store.find_by(id: params[:store_id])
+    if index_params[:store_id]
+      store = Store.find_by(id: index_params[:store_id])
       return render json: { error: "Store not found" }, status: :not_found unless store
 
       store_products = store.store_products.includes(:product)
@@ -13,6 +13,20 @@ class Api::V1::ProductsController < ApplicationController
     else
       products = Product.all
       render json: products.map { |p| product_response(p) }, status: :ok
+    end
+  end
+
+  def index_params
+    params.permit(:store_id)
+  end
+
+  # GET /api/v1/products/:id
+  def show
+  product = Product.find_by(id: show_params[:id])
+    if product
+      render json: product_response(product), status: :ok
+    else
+      render json: { error: "Product not found" }, status: :not_found
     end
   end
 
@@ -40,5 +54,9 @@ class Api::V1::ProductsController < ApplicationController
       location: store_product.location,
       store_id: store_product.store_id
     }
+  end
+
+  def show_params
+    params.permit(:id)
   end
 end

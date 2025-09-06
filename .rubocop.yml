@@ -1,5 +1,17 @@
 # Omakase Ruby styling for Rails
-inherit_gem: { rubocop-rails-omakase: rubocop.yml }
+inherit_gem:
+  rubocop-rails-omakase: rubocop.yml
+
+# Project overrides
+AllCops:
+  TargetRubyVersion: 3.3
+  NewCops: enable
+  Exclude:
+    - 'bin/**/*'
+    - 'tmp/**/*'
+
+Layout/LineLength:
+  Max: 120
 
 # Overwrite or add rules to create your own house style
 #

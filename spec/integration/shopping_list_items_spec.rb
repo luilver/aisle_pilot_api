@@ -16,11 +16,11 @@ RSpec.describe 'Shopping List Items', type: :request do
           quantity: { type: :integer }
         }
       }
-      security [ Bearer: [] ]
+      security [Bearer: []]
       parameter name: :Authorization, in: :header, type: :string
 
       response '201', 'item added' do
-        let(:store) { Store.create!(name: "Test Store") }
+  let(:store) { Store.create!(name: "Test Store") }
         let(:user) { User.create!(name: "Test User", email: "test@example.com", password: "password") }
         let(:product) { Product.create!(name: "Test Product") }
         let(:shopping_list) { ShoppingList.create!(user: user, store: store) }
@@ -31,7 +31,8 @@ RSpec.describe 'Shopping List Items', type: :request do
         end
 
         let(:Authorization) do
-          token = JWT.encode({ user_id: user.id }, Rails.application.credentials.jwt_secret)
+          secret = Rails.application.credentials.jwt_secret.presence || ENV['JWT_SECRET']
+          token = JWT.encode({ user_id: user.id }, secret, 'HS256')
           "Bearer #{token}"
         end
 

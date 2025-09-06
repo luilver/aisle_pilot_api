@@ -2,9 +2,22 @@ class Api::V1::StoresController < ApplicationController
   before_action :authorize_user
 
   # GET /api/v1/stores
+  # Optionally filtered by ?zip_code=12345
   def index
-    stores = Store.all
+    if index_params[:zip_code]
+      stores = Store.where("location LIKE ?", "%#{index_params[:zip_code]}%")
+      if stores.empty?
+        return render json: { message: "No stores found for zip code #{index_params[:zip_code]}" }, status: :ok
+      end
+    else
+      stores = Store.all
+    end
+    
     render json: stores.map { |store| store_response(store) }, status: :ok
+  end
+
+  def index_params
+    params.permit(:zip_code)
   end
 
   # GET /api/v1/stores/:id

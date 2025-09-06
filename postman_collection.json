@@ -1,204 +1,487 @@
 {
   "info": {
-    "name": "Project AislePilot API",
+    "name": "AislePilot API - Complete Collection",
+    "description": "Colección completa de endpoints para la API de AislePilot",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
   "item": [
     {
-      "name": "Auth - Register",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"name\": \"Test User\",\n  \"password\": \"password123\",\n  \"password_confirmation\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/register",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "register"
+              ]
+            },
+            "description": "Registra un nuevo usuario en el sistema"
           }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"email\": \"test@example.com\",\n  \"name\": \"Test User\",\n  \"password\": \"password\",\n  \"password_confirmation\": \"password\"\n}"
         },
-        "url": {
-          "raw": "http://localhost:3000/api/v1/register",
-          "host": [
-            "localhost"
+        {
+          "name": "Login User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('token', response.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
           ],
-          "port": "3000",
-          "path": [
-            "api",
-            "v1",
-            "register"
-          ]
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "login"
+              ]
+            },
+            "description": "Autentica un usuario y obtiene el token JWT"
+          }
         }
-      }
+      ]
     },
     {
-      "name": "Auth - Login",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
+      "name": "Stores",
+      "item": [
+        {
+          "name": "Get All Stores",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/stores",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "stores"
+              ]
+            },
+            "description": "Obtiene todas las tiendas disponibles"
           }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"password\"\n}"
         },
-        "url": {
-          "raw": "http://localhost:3000/api/v1/login",
-          "host": [
-            "localhost"
-          ],
-          "port": "3000",
-          "path": [
-            "api",
-            "v1",
-            "login"
-          ]
+        {
+          "name": "Search Stores by Zip Code",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/stores?zip_code=12345",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "stores"
+              ],
+              "query": [
+                {
+                  "key": "zip_code",
+                  "value": "12345",
+                  "description": "Código postal para filtrar tiendas"
+                }
+              ]
+            },
+            "description": "Busca tiendas por código postal (BACKND001)"
+          }
         }
-      }
+      ]
     },
     {
-      "name": "Get Stores",
-      "request": {
-        "method": "GET",
-        "header": [
-          {
-            "key": "Authorization",
-            "value": "Bearer {{token}}"
+      "name": "Products",
+      "item": [
+        {
+          "name": "Get All Products",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/products",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products"
+              ]
+            },
+            "description": "Obtiene todos los productos disponibles"
           }
-        ],
-        "url": {
-          "raw": "http://localhost:3000/api/v1/stores",
-          "host": [
-            "localhost"
-          ],
-          "port": "3000",
-          "path": [
-            "api",
-            "v1",
-            "stores"
-          ]
-        }
-      }
-    },
-    {
-      "name": "Get Products",
-      "request": {
-        "method": "GET",
-        "header": [
-          {
-            "key": "Authorization",
-            "value": "Bearer {{token}}"
-          }
-        ],
-        "url": {
-          "raw": "http://localhost:3000/api/v1/products",
-          "host": [
-            "localhost"
-          ],
-          "port": "3000",
-          "path": [
-            "api",
-            "v1",
-            "products"
-          ]
-        }
-      }
-    },
-    {
-      "name": "Create Shopping List",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Authorization",
-            "value": "Bearer {{token}}"
-          },
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"name\": \"Weekly Groceries\",\n  \"store_id\": 1\n}"
         },
-        "url": {
-          "raw": "http://localhost:3000/api/v1/shopping_lists",
-          "host": [
-            "localhost"
-          ],
-          "port": "3000",
-          "path": [
-            "api",
-            "v1",
-            "shopping_lists"
-          ]
+        {
+          "name": "Get Products by Store ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/products?store_id=1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "store_id",
+                  "value": "1",
+                  "description": "ID de la tienda para filtrar productos"
+                }
+              ]
+            },
+            "description": "Obtiene productos disponibles en una tienda específica (BACKND002)"
+          }
         }
-      }
+      ]
     },
     {
-      "name": "Add Item to Shopping List",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Authorization",
-            "value": "Bearer {{token}}"
-          },
-          {
-            "key": "Content-Type",
-            "value": "application/json"
+      "name": "Shopping Lists",
+      "item": [
+        {
+          "name": "Get All Shopping Lists",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/shopping_lists",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "shopping_lists"
+              ]
+            },
+            "description": "Obtiene todas las listas de compras del usuario"
           }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"product_id\": 1,\n  \"quantity\": 2,\n  \"notes\": \"Organic if possible\"\n}"
         },
-        "url": {
-          "raw": "http://localhost:3000/api/v1/shopping_lists/1/shopping_list_items",
-          "host": [
-            "localhost"
-          ],
-          "port": "3000",
-          "path": [
-            "api",
-            "v1",
-            "shopping_lists",
-            "1",
-            "shopping_list_items"
-          ]
+        {
+          "name": "Get Shopping List by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/shopping_lists/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "shopping_lists",
+                "1"
+              ]
+            },
+            "description": "Obtiene una lista de compras específica"
+          }
+        },
+        {
+          "name": "Create Shopping List",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Lista de Compras Semanal\",\n  \"store_id\": 1\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/shopping_lists",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "shopping_lists"
+              ]
+            },
+            "description": "Crea una nueva lista de compras"
+          }
+        },
+        {
+          "name": "Update Shopping List",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Lista Actualizada\",\n  \"store_id\": 2\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/shopping_lists/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "shopping_lists",
+                "1"
+              ]
+            },
+            "description": "Actualiza una lista de compras existente"
+          }
+        },
+        {
+          "name": "Delete Shopping List",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/shopping_lists/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "shopping_lists",
+                "1"
+              ]
+            },
+            "description": "Elimina una lista de compras"
+          }
+        },
+        {
+          "name": "Get Optimized Shopping Order",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/shopping_lists/1/optimized_order",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "shopping_lists",
+                "1",
+                "optimized_order"
+              ]
+            },
+            "description": "Obtiene el orden optimizado de compra basado en la ubicación de productos en la tienda"
+          }
         }
-      }
+      ]
     },
     {
-      "name": "Get Optimized Shopping Order",
-      "request": {
-        "method": "GET",
-        "header": [
-          {
-            "key": "Authorization",
-            "value": "Bearer {{token}}"
+      "name": "Shopping List Items",
+      "item": [
+        {
+          "name": "Add Item to Shopping List",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"product_id\": 1,\n  \"quantity\": 2,\n  \"notes\": \"Orgánico si es posible\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/shopping_lists/1/shopping_list_items",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "shopping_lists",
+                "1",
+                "shopping_list_items"
+              ]
+            },
+            "description": "Agrega un producto a la lista de compras"
           }
-        ],
-        "url": {
-          "raw": "http://localhost:3000/api/v1/shopping_lists/1/optimized_order",
-          "host": [
-            "localhost"
-          ],
-          "port": "3000",
-          "path": [
-            "api",
-            "v1",
-            "shopping_lists",
-            "1",
-            "optimized_order"
-          ]
+        },
+        {
+          "name": "Update Shopping List Item",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 3,\n  \"notes\": \"Actualizado: preferir marca específica\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/shopping_lists/1/shopping_list_items/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "shopping_lists",
+                "1",
+                "shopping_list_items",
+                "1"
+              ]
+            },
+            "description": "Actualiza un ítem específico de la lista de compras"
+          }
+        },
+        {
+          "name": "Delete Shopping List Item",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/shopping_lists/1/shopping_list_items/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "shopping_lists",
+                "1",
+                "shopping_list_items",
+                "1"
+              ]
+            },
+            "description": "Elimina un ítem de la lista de compras"
+          }
         }
-      }
+      ]
     }
   ]
 }

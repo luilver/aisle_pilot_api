@@ -7,7 +7,7 @@ RSpec.describe 'Products', type: :request do
       produces 'application/json'
       security [ bearer_auth: [] ]
 
-      response '200', 'products found' do
+  response '200', 'products found' do
         let!(:user) do
           User.create!(
             email: 'test@example.com',
@@ -17,7 +17,8 @@ RSpec.describe 'Products', type: :request do
         end
 
         let(:Authorization) do
-          token = JWT.encode({ user_id: user.id }, Rails.application.credentials.jwt_secret, 'HS256')
+          secret = Rails.application.credentials.jwt_secret.presence || ENV['JWT_SECRET']
+          token = JWT.encode({ user_id: user.id }, secret, 'HS256')
           "Bearer #{token}"
         end
 
