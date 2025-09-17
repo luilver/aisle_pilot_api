@@ -4,12 +4,12 @@ one:
   store: one
   product: one
   aisle: MyString
-  location: 
+  location:
   price: 9.99
 
 two:
   store: two
   product: two
   aisle: MyString
-  location: 
+  location:
   price: 9.99

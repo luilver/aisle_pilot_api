@@ -1,8 +1,9 @@
 ---
 openapi: 3.0.1
 info:
-  title: API V1
+  title: Aisle Pilot API V1
   version: v1
+  description: API for managing stores, products, shopping lists and items
 components:
   securitySchemes:
     bearer_auth:
@@ -61,6 +62,38 @@ paths:
                   type: string
                 password:
                   type: string
+  "/api/v1/stores":
+    get:
+      summary: List all stores
+      tags:
+      - Stores
+      security:
+      - bearer_auth: []
+      responses:
+        '200':
+          description: stores listed
+        '401':
+          description: unauthorized
+  "/api/v1/stores/{id}":
+    get:
+      summary: Get store by ID
+      tags:
+      - Stores
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: store found
+        '404':
+          description: store not found
+        '401':
+          description: unauthorized
   "/api/v1/products":
     get:
       summary: List all products
@@ -71,26 +104,193 @@ paths:
       responses:
         '200':
           description: products found
-  "/api/v1/shopping_lists/{id}/shopping_list_items":
-    post:
-      summary: Add item to shopping list
+        '401':
+          description: unauthorized
+  "/api/v1/products/{id}":
+    get:
+      summary: Get product by ID
       tags:
-      - ShoppingListItems
+      - Products
+      security:
+      - bearer_auth: []
       parameters:
       - name: id
         in: path
         required: true
         schema:
-          type: string
-      - name: Authorization
-        in: header
-        schema:
-          type: string
+          type: integer
+      responses:
+        '200':
+          description: product found
+        '404':
+          description: product not found
+        '401':
+          description: unauthorized
+  "/api/v1/shopping_lists":
+    get:
+      summary: List all shopping lists
+      tags:
+      - ShoppingLists
       security:
-      - Bearer: []
+      - bearer_auth: []
+      responses:
+        '200':
+          description: shopping lists found
+        '401':
+          description: unauthorized
+    post:
+      summary: Create shopping list
+      tags:
+      - ShoppingLists
+      security:
+      - bearer_auth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - name
+              properties:
+                name:
+                  type: string
       responses:
         '201':
-          description: item added
+          description: shopping list created
+        '422':
+          description: invalid request
+        '401':
+          description: unauthorized
+  "/api/v1/shopping_lists/{id}":
+    get:
+      summary: Get shopping list by ID
+      tags:
+      - ShoppingLists
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: shopping list found
+        '404':
+          description: shopping list not found
+        '401':
+          description: unauthorized
+    patch:
+      summary: Update shopping list
+      tags:
+      - ShoppingLists
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+      responses:
+        '200':
+          description: shopping list updated
+        '404':
+          description: shopping list not found
+        '422':
+          description: invalid request
+        '401':
+          description: unauthorized
+    put:
+      summary: Update shopping list (PUT)
+      tags:
+      - ShoppingLists
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+      responses:
+        '200':
+          description: shopping list updated
+        '404':
+          description: shopping list not found
+        '422':
+          description: invalid request
+        '401':
+          description: unauthorized
+    delete:
+      summary: Delete shopping list
+      tags:
+      - ShoppingLists
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: shopping list deleted
+        '404':
+          description: shopping list not found
+        '401':
+          description: unauthorized
+  "/api/v1/shopping_lists/{id}/optimized_order":
+    get:
+      summary: Get optimized order for shopping list
+      tags:
+      - ShoppingLists
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: optimized order returned
+        '404':
+          description: shopping list not found
+        '401':
+          description: unauthorized
+  "/api/v1/shopping_lists/{shopping_list_id}/shopping_list_items":
+    post:
+      summary: Add item to shopping list
+      tags:
+      - ShoppingListItems
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: shopping_list_id
+        in: path
+        required: true
+        schema:
+          type: integer
       requestBody:
         content:
           application/json:
@@ -104,17 +304,103 @@ paths:
                   type: integer
                 quantity:
                   type: integer
-  "/api/v1/stores":
-    get:
-      summary: List all stores
+      responses:
+        '201':
+          description: item added
+        '422':
+          description: invalid request
+        '401':
+          description: unauthorized
+  "/api/v1/shopping_lists/{shopping_list_id}/shopping_list_items/{id}":
+    patch:
+      summary: Update item in shopping list
       tags:
-      - Stores
+      - ShoppingListItems
+      security:
+      - bearer_auth: []
       parameters:
-      - name: Authorization
-        in: header
+      - name: shopping_list_id
+        in: path
         required: true
         schema:
-          type: string
+          type: integer
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantity:
+                  type: integer
       responses:
         '200':
-          description: stores listed
+          description: item updated
+        '404':
+          description: item not found
+        '422':
+          description: invalid request
+        '401':
+          description: unauthorized
+    put:
+      summary: Update item in shopping list (PUT)
+      tags:
+      - ShoppingListItems
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: shopping_list_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantity:
+                  type: integer
+      responses:
+        '200':
+          description: item updated
+        '404':
+          description: item not found
+        '422':
+          description: invalid request
+        '401':
+          description: unauthorized
+    delete:
+      summary: Delete item from shopping list
+      tags:
+      - ShoppingListItems
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: shopping_list_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: item deleted
+        '404':
+          description: item not found
+        '401':
+          description: unauthorized

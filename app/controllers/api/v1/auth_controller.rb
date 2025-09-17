@@ -39,7 +39,8 @@ module Api
       end
 
       def encode_token(payload)
-        JWT.encode(payload, Rails.application.credentials.jwt_secret, "HS256")
+        jwt_secret = Rails.application.credentials.jwt_secret.presence || ENV["JWT_SECRET"] || "your_super_secret_jwt_key_for_development_12345_changeme_in_production"
+        JWT.encode(payload, jwt_secret, "HS256")
       end
     end
   end

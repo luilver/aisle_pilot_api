@@ -72,4 +72,12 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
+
+  # Helper to build Authorization header in request specs
+  config.define_derived_metadata(file_path: %r{spec/integration|spec/requests}) do |metadata|
+    metadata[:type] = :request
+  end
 end
+
+# Provide a consistent JWT secret in test if credentials missing
+ENV['JWT_SECRET'] ||= 'test-secret'
